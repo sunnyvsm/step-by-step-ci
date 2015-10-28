@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu/trusty64"
+
+  config.vm.provider "virtualbox" do |vb|
+      # Customize the amount of memory on the VM:
+      vb.memory = "1024"
+      vb.cpus = 2
+  end
+
+  config.vm.synced_folder "jenkins_data", "/home/vagrant/jenkins_data"
+
+  config.vm.network "forwarded_port", guest: 8080, host: 8081
+  config.vm.network "private_network", ip: "192.168.56.111", name: "VirtualBox Host-Only Ethernet Adapter", adapter: 2
+
+  config.vm.provision "shell", inline: <<-SHELL
+    # create the jenkins data folder
+    mkdir /home/vagrant/jenkins_data
+
+    # get the latest docker version
+    wget -qO- https://get.docker.com | sh
+
+    # start up jenkins docker image
+    sudo docker run --name myjenkins \
+                    --restart=always \
+                    -d \
+                    -p 8080:8080 \
+                    -p 50000:50000 \
+                    -v /home/vagrant/jenkins_data:/var/jenkins_home \
+                    jenkins
+
+    # give vagrant user sudo access to the docker commands.
+    # This is only a convenience when SSHing into the VM as vagrant user.
+    sudo usermod -aG docker vagrant
+  SHELL
+end
