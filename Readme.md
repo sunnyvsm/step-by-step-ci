@@ -79,7 +79,7 @@ Once the Jenkis server is up and running and small example project can be create
   1. Save and run the Jenkins Project.
     - *If it fails, check the console output, it can happen that the build fails because one of the unit tests failed. There is a unit test that randomly (~33%) fails. Just to keep things interesting. :P*
 
-## Add a better way to see the failed tests
+### Add a better way to see the failed tests
   1. Install the Jenkins [VSTest Plugin][jen_vstest].
     - *This will convert the VSTestRunner results to JUnit compatible results which can be read nicely by Jenkins.*
   1. Open the Project Configuration
@@ -87,6 +87,36 @@ Once the Jenkis server is up and running and small example project can be create
     - Test report TRX file: `${VSTEST_RESULT_TRX}`
   1. Save and run a build. Now there should be a `Test Result` link in the Build report.
 
+### Adding Robotframework support
+  1. In the test Project *[OddState/MicroProjectForTesting][oddstate_test]* there is a tiny test implmenetation of [Robotframework][roboframe] tests. These will now be added to the build project.
+  1. Installing [Robotframework][roboframe] on the Windows Build Slave.
+    1. Remote onto the build slave
+    1. [*IronPython Robotframework install instructions*][ipy_robot]
+      1. *Download IronPython and install it*
+      1. *Add the path `C:\Program Files (x86)\IronPython 2.7` to the system `PATH` variable*
+      1.  *Add the path `C:\Program Files (x86)\IronPython 2.7\Scripts` to the system `PATH` variable*
+      1. *Download [elementree][ipy_el] zip file, extract it and run `ipy setup.py install` from within the extracted folder to install it.*
+      1. *To Test if the framework is working correctly, open a command prompt in the `MicroCalculator\RobotTests` folder and run `ipybot operatorBehaviours.robot`. This should run a few tests and output some results.*
+    1. Restart the Jenkins slave service
+    1. In Jenkins install the [Robot Framework Plugin][jen_robo_plug]
+    1. Open the Project Configuration and add a build step `Execute Windows batch command`
+      - Command:
+      ```
+      ipybot -T -x xunit.xml -d RobotResults MicroCalculator\RobotTests\operatorBehaviours.robot
+      exit 0
+      ```
+        - *T - adds timestam to the output files*
+        - *x - adds a xunit compatible output xml*
+        - *d - defines the output directory*
+
+    1. Add a post-build action `Publish Robot Framework test results`
+      - Directory of Robot output: `RobotResults`
+      - Thresholds (both): `100`
+    1. Save and run the project. In the build summary a Robot Test Summary should be visible.
+
+
+### Compbining both test results into a single report
+https://wiki.jenkins-ci.org/display/JENKINS/Test+Results+Analyzer+Plugin
 
 ## References and Links
  - https://www.virtualbox.org/
@@ -115,3 +145,8 @@ Once the Jenkis server is up and running and small example project can be create
 [win_slave]:  ""  "Windows Build Slave"
 [oddstate_test]:  https://github.com/OddState/MicroProjectForTesting "OddState - Test Project"
 [jen_vstest]: https://wiki.jenkins-ci.org/display/JENKINS/MSTest+Plugin "VSTest Plugin"
+[roboframe]: http://robotframework.org/ "Robotframework"
+[ipy]:  http://ironpython.net/ "IronPython"
+[ipy_robot]: https://github.com/robotframework/robotframework/blob/master/INSTALL.rst#ironpython-installation "Robotframework via IronPython"
+[ipy_el]: http://effbot.org/downloads/#elementtree "Elementree"
+[jen_robo_plug]: https://wiki.jenkins-ci.org/display/JENKINS/Robot+Framework+Plugin "Robot Framework Plugin"
