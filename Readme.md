@@ -51,6 +51,7 @@ Pre-requisits
 ## Setup a Example Project
 Once the Jenkis server is up and running and small example project can be created and built using a slave build node. A small test project can be used to test the CI chain to make sure it works before including a bigger project.
 
+### Setup a simple Project that builds on a slave node
 1. Setup a Windows Build Slave as described in [Windows Build Slave][win_slave]
 1. Setup a Test Project in Jenkins (*The test project used in this example is: [OddState/MicroProjectForTesting
 ][oddstate_test]*)
@@ -67,8 +68,24 @@ Once the Jenkis server is up and running and small example project can be create
     - Under *Build* Add a Build step
       - MSBuild Version: `.Net 4.0` *The choices here depend on what was configured for the MSBuild Plugin*
       - MSBuild Build File: `"MicroCalculator/MicroCalculator.sln"`
+  1. Run the build.
+      - Check the console output should the build fail to find out what caused the fail.
 
+### Adding a step to run the VSTests
+  1. Open the Jenkins Project configuration
+  1. Add a build step `Run unit tests with VSTest.console`
+    - VsTest Version: `VSTest Console`*The choices here depend on what was configured for the VSTest Runner Plugin*
+    - Test Files: `"MicroCalculator/CalculatorFunctionTests/bin/Debug/CalculatorFunctionTests.dll"`
+  1. Save and run the Jenkins Project.
+    - *If it fails, check the console output, it can happen that the build fails because one of the unit tests failed. There is a unit test that randomly (~33%) fails. Just to keep things interesting. :P*
 
+## Add a better way to see the failed tests
+  1. Install the Jenkins [VSTest Plugin][jen_vstest].
+    - *This will convert the VSTestRunner results to JUnit compatible results which can be read nicely by Jenkins.*
+  1. Open the Project Configuration
+  1. Add a Post-build Action `Publish MSTest test result report`
+    - Test report TRX file: `${VSTEST_RESULT_TRX}`
+  1. Save and run a build. Now there should be a `Test Result` link in the Build report.
 
 
 ## References and Links
@@ -97,3 +114,4 @@ Once the Jenkis server is up and running and small example project can be create
 [docker_hub]: https://hub.docker.com/ "Docker Hub"
 [win_slave]:  ""  "Windows Build Slave"
 [oddstate_test]:  https://github.com/OddState/MicroProjectForTesting "OddState - Test Project"
+[jen_vstest]: https://wiki.jenkins-ci.org/display/JENKINS/MSTest+Plugin "VSTest Plugin"
