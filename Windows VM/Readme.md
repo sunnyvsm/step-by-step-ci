@@ -1,6 +1,9 @@
 # Step by Step CI - Add Windows Build Slave
 A quick and dirty way to setup a CI envrionment on your local machine.
 
+*Todo*
+    - Add a "how to" create a windows base box
+
 ### Summary
 This describes the minimum amount of steps needed to setup a Windows Build/Test Slave for the Jenkins master server created in [Jenkins Master Server][jen_master].
 

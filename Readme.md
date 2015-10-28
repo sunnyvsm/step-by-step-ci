@@ -1,10 +1,6 @@
 # Step by Step CI
 A quick and dirty way to setup a CI envrionment on your local machine.
 
-*Todo*
-  - Add detailed descriptions of the thoughts of each step
-  - Add a "how to" create a windows base box
-
 ### Summary
 The idea is to create an easy way to spin up a CI, Testing a build environment to be able to quickly test concepts and ideas concerning the design of such infrastructure. In a second step, after the concept has been proven to be viable for the situation, the scripts should be able to provide close to the exact same environment except this time it should deliver a production ready system that can easily be destroyed and re-initialized reliably. This combination should also accommodate any changes that need to be made to the CI environment as life-cycle of the production continues.
 
@@ -52,7 +48,7 @@ Pre-requisits
 Once the Jenkis server is up and running and small example project can be created and built using a slave build node. A small test project can be used to test the CI chain to make sure it works before including a bigger project.
 
 ### Setup a simple Project that builds on a slave node
-1. Setup a Windows Build Slave as described in [Windows Build Slave][win_slave]
+1. Setup a Windows Build Slave as described in [Windows Build Slave](/Windows VM/Readme.md)
 1. Setup a Test Project in Jenkins (*The test project used in this example is: [OddState/MicroProjectForTesting
 ][oddstate_test]*)
   1. Create a new Item in Jenkins
@@ -114,9 +110,13 @@ Once the Jenkis server is up and running and small example project can be create
       - Thresholds (both): `100`
     1. Save and run the project. In the build summary a Robot Test Summary should be visible.
 
-
 ### Compbining both test results into a single report
-https://wiki.jenkins-ci.org/display/JENKINS/Test+Results+Analyzer+Plugin
+  1. Time to combine the 2 different test results into a single report.
+  1. Install the Jenkins Plugin [Test Result Analyzer][jen_test_res]
+  1. Because both test results are in xunit output format they are easily read by the plugin. No configuration is needed.
+  1. Run the Project. Once its done the Report can be viewed by selecting it from the menu that is opened from next to the project name.
+  1. Click `Get Build Report`
+
 
 ## References and Links
  - https://www.virtualbox.org/
@@ -142,7 +142,6 @@ https://wiki.jenkins-ci.org/display/JENKINS/Test+Results+Analyzer+Plugin
 [docker]:   https://www.docker.com/ "Docker"
 [docker_jen]: https://hub.docker.com/_/jenkins/ "Offical Docker Jenkins Image"
 [docker_hub]: https://hub.docker.com/ "Docker Hub"
-[win_slave]:  ""  "Windows Build Slave"
 [oddstate_test]:  https://github.com/OddState/MicroProjectForTesting "OddState - Test Project"
 [jen_vstest]: https://wiki.jenkins-ci.org/display/JENKINS/MSTest+Plugin "VSTest Plugin"
 [roboframe]: http://robotframework.org/ "Robotframework"
@@ -150,3 +149,4 @@ https://wiki.jenkins-ci.org/display/JENKINS/Test+Results+Analyzer+Plugin
 [ipy_robot]: https://github.com/robotframework/robotframework/blob/master/INSTALL.rst#ironpython-installation "Robotframework via IronPython"
 [ipy_el]: http://effbot.org/downloads/#elementtree "Elementree"
 [jen_robo_plug]: https://wiki.jenkins-ci.org/display/JENKINS/Robot+Framework+Plugin "Robot Framework Plugin"
+[jen_test_res]: https://wiki.jenkins-ci.org/display/JENKINS/Test+Results+Analyzer+Plugin "Test Result Analyzer"
