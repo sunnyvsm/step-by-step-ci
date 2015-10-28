@@ -11,6 +11,9 @@ This describes the minimum amount of steps needed to setup a Windows Build/Test 
     - [Oracle Virtual Box][virtbox]
     - [Vagrant][vag]
   2. Have a vagrant ready Windows base box named "win10"
+1. Install [git-scm][git_scm] on the Windows VM
+  - Important: When installing make sure to set the "Use Git from the Windows Command Prompt". If you do install git after installing the Slave Agent Service, remember to restart the service so that it reloads the command prompt commands it knows of.
+
 1. ** Install Jenkins plugins**
   - [GitHub][jen_github]
   - [MSBuild][jen_msbuild]
@@ -53,3 +56,4 @@ This describes the minimum amount of steps needed to setup a Windows Build/Test 
 [jen_github]:https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Plugin
 [jen_msbuild]:https://wiki.jenkins-ci.org/display/JENKINS/MSBuild+Plugin
 [jen_vstest]:https://wiki.jenkins-ci.org/display/JENKINS/VsTestRunner+Plugin
+[git_scm]:  https://git-scm.com/ "git scm"

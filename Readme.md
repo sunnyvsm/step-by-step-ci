@@ -13,15 +13,16 @@ The idea is to create an easy way to spin up a CI, Testing a build environment t
 - Allow for a reliable way to initialize, run and destroy the proven CI env. as the production CI.
 
 
-**The Quick and Dirty**
+## The Quick and Dirty
 
 *Note*: Installing the complete CI environment on your own dev box. This description is done on a windows 8 machine but should easily map to a OS X or Linux environment.
 
-1. **Pre-requisits**
+Pre-requisits
   1. Install on Dev box
     - [Oracle Virtual Box][virtbox]
     - [Vagrant][vag]
-1. **Start up Jenkins Server**
+
+### Start up Jenkins Server
   1. grab this repo
   1. In the Folder the following folder structure should exist
     ```
@@ -30,14 +31,47 @@ The idea is to create an easy way to spin up a CI, Testing a build environment t
             | jenkins_data
     ```
   1. Open the command prompt in the Jenkins VM folder and run `vagrant up`
-1. **Configure Jenkins Server**
+      - *This will download and start up a linux box that is based on the [ubuntu/trusty64][atlas_ub] base box. This is the official base box from ubuntu and is downloaded from [Atlas][atlas] (HashiCorps online vagrant base box repository). After downloading the base box the script will install [Docker][docker]. After [Docker][docker] is installed, it will download and run the [offical docker jenkins image][docker_jen] from [Docker Hub][docker_hub].*
+      - *Addtionally the vagrant file creates a shared folder(`jenkins_data`) between the VM and the host machine. This shared folder is passed through to the Docker image as the folder in which Jenkins will save its config information. This setup allows for a quick teardown and build up of the VM/Docker image without losing the Jenkins setup and installed plugins. This should also allow for a easy way to backup the Jenkins configuration and possibly even version control it.
+     `Host Folder <-> VM <-> Docker Image`*
+      - *Port forwarding is set to `Host 8081 -> VM 8080 -> Docker Image 8080`. This allows for Jenkins to be accessed from the host via `http://localhost:8081`*
+      - *Addtional private network setup is done so that the Jenkins server will always have the same IP address and only be reachable via that IP address from within the Virtualbox network which all the slave nodes will be part of.*
+      - *Lastly the vagrant user is given sudo rights to the docker command so that debugging the docker image via SSH is easier.*
+
+### Configure Jenkins Server
   1. Goto http://localhost:8081 to access Jenkins
+    - *This is done from the host machine and works because of the port forwarding done by the vagrant script.*
   1. Update all the currently available plugins
+    - *`Managment Jenkins -> Manage Plugins`*
   1. Set the Jenkins URL to http://192.168.56.111:8080/
-    - Manage Jenkins -> Configure System -> Jenkins Location
+    - *`Manage Jenkins -> Configure System -> Jenkins Location`*
+
+*All the relevant configuration files will be available in the VM shared folder (`jenkins_data`). The configuration will therefore be persisted even if the VM is destroyed.*
+
+## Setup a Example Project
+Once the Jenkis server is up and running and small example project can be created and built using a slave build node. A small test project can be used to test the CI chain to make sure it works before including a bigger project.
+
+1. Setup a Windows Build Slave as described in [Windows Build Slave][win_slave]
+1. Setup a Test Project in Jenkins (*The test project used in this example is: [OddState/MicroProjectForTesting
+][oddstate_test]*)
+  1. Create a new Item in Jenkins
+    - Item name: `[anything you want to call it]`
+    - Type: `Freestyle`
+  1. In the more detailed Jenkins Project settings
+    - GitHub project: `https://github.com/OddState/MicroProjectForTesting/`
+    - check: `Restrict where this project can be run`
+    - Label Expression: `winBuildSlave` (or whatever name you gave the windows build slave node.) *This is done to make sure that the ms build slave is used. Later, when there are more build slaves, this field can be set to a label that defines all ms build slaves so that the building/testing is done by a currently available node.*
+    - Under *Source Code Managment*
+      - Select: `Git`
+      - repository URL: `https://github.com/OddState/MicroProjectForTesting.git`
+    - Under *Build* Add a Build step
+      - MSBuild Version: `.Net 4.0` *The choices here depend on what was configured for the MSBuild Plugin*
+      - MSBuild Build File: `"MicroCalculator/MicroCalculator.sln"`
 
 
-### References and Links
+
+
+## References and Links
  - https://www.virtualbox.org/
  - https://www.vagrantup.com/
  - https://atlas.hashicorp.com/ubuntu/boxes/trusty64
@@ -56,3 +90,10 @@ The idea is to create an easy way to spin up a CI, Testing a build environment t
 [vag]:      https://www.vagrantup.com/  "Vagrant"
 [vs]:       https://www.visualstudio.com  "Visual Studio"
 [java]:     https://www.java.com/en/    "Java"
+[atlas]:    https://atlas.hashicorp.com/  "Atlas"
+[atlas_ub]: https://atlas.hashicorp.com/ubuntu/boxes/trusty64 "Ubuntu"
+[docker]:   https://www.docker.com/ "Docker"
+[docker_jen]: https://hub.docker.com/_/jenkins/ "Offical Docker Jenkins Image"
+[docker_hub]: https://hub.docker.com/ "Docker Hub"
+[win_slave]:  ""  "Windows Build Slave"
+[oddstate_test]:  https://github.com/OddState/MicroProjectForTesting "OddState - Test Project"
