@@ -48,9 +48,12 @@ This describes the minimum amount of steps needed to setup a Windows Build/Test 
   1. Click on the new Node and follow one of the methods to install the slave-agent.jnlp on the slave machine. Remember to install the agent as a service after it has successfuly connected with the master server.
 
 
+<<<<<<< HEAD
 
 ### References and Links
 
+=======
+>>>>>>> origin/master
 [virtbox]:  https://www.virtualbox.org/ "Oracle Virtual Box"
 [vag]:      https://www.vagrantup.com/  "Vagrant"
 [vs]:       https://www.visualstudio.com  "Visual Studio"
