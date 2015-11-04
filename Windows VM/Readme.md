@@ -5,7 +5,7 @@ A quick and dirty way to setup a CI envrionment on your local machine.
     - Add a "how to" create a windows base box
 
 ### Summary
-This describes the minimum amount of steps needed to setup a Windows Build/Test Slave for the Jenkins master server created in [Jenkins Master Server][jen_master].
+This describes the minimum amount of steps needed to setup a Windows Build/Test Slave for the Jenkins master server created in [Jenkins Master Server](../Readme.md).
 
 
 ### Setup MS Build Slave
@@ -51,7 +51,6 @@ This describes the minimum amount of steps needed to setup a Windows Build/Test 
 
 ### References and Links
 
-[jen_master]: [../Readme.md] "Jenkins Master Server"
 [virtbox]:  https://www.virtualbox.org/ "Oracle Virtual Box"
 [vag]:      https://www.vagrantup.com/  "Vagrant"
 [vs]:       https://www.visualstudio.com  "Visual Studio"
