@@ -13,7 +13,7 @@ This describes the minimum amount of steps needed to setup a Windows Build/Test 
   1. Install on Dev box
     - [Oracle Virtual Box][virtbox]
     - [Vagrant][vag]
-  2. Have a vagrant ready Windows base box named "win10"
+  2. Have a vagrant ready [Windows base box](create_win_base_box.md) named "win10"
 1. Install [git-scm][git_scm] on the Windows VM
   - Important: When installing make sure to set the "Use Git from the Windows Command Prompt". If you do install git after installing the Slave Agent Service, remember to restart the service so that it reloads the command prompt commands it knows of.
 
